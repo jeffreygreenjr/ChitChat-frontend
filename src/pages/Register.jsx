@@ -1,17 +1,58 @@
-import React from 'react'
+import React, { useState, UseEffect } from 'react'
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-
+import { ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
 import Logo from "../assets/logo.svg";
 
 function Register() {
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert("form");
-    }; 
+    const [values, setValues] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
 
-    const handleChange = (e) => {};
+    const toastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark" 
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if(handleValidation()) {
+            const {password, confirmPassword, username, email} = values;
+            const {data} = await axios.post
+        };
+    };
+
+    const handleValidation = () => {
+        const {password, confirmPassword, username, email} = values;
+        if(password!==confirmPassword) {
+            toast.error("Password and confirm password should be the same.", 
+            toastOptions
+            );
+            return false;
+        } else if (username.length < 4) {
+            toast.error("Username should be a minimum of 4 characters", toastOptions);
+            return false;
+        } else if (password.length < 8) {
+            toast.error("Password should be a minimum of 8 characters", toastOptions);
+            return false;
+        } else if (email === "") {
+            toast.error("Email is required", toastOptions);
+            return false;
+        }
+    }
+
+    const handleChange = (e) => {
+        setValues({...values, [e.target.name]: e.target.value})
+    };
 
   return (
     <>
@@ -19,7 +60,7 @@ function Register() {
             <form onSubmit={(e) => handleSubmit(e)}>
                 <div className="brand">
                     <img src={Logo} alt="logo" />
-                    <h1>snappy</h1>
+                    <h1>ChitChat</h1>
                 </div>
                 <input
                     type="text"
@@ -52,6 +93,7 @@ function Register() {
 
                 </form>
         </FormContainer>
+        <ToastContainer />
     </>
   )
 }
